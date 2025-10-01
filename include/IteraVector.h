@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 #include <iostream>
 #include <cstdlib>
 
@@ -25,6 +26,45 @@ private:
     }
 
 public:
+    // ========== Iterator Class ==========
+    class Iterator {
+    private:
+        Vector<T>* vec;  // pointer to owning vector
+        int index;       // current index
+    public:
+        Iterator(Vector<T>* v, int i) : vec(v), index(i) {}
+
+        // Dereference
+        T& operator*() { return vec->arr[index]; }
+
+        // Prefix increment
+        Iterator& operator++() {
+            ++index;
+            return *this;
+        }
+
+        // Postfix increment
+        Iterator operator++(int) {
+            Iterator temp = *this;
+            ++index;
+            return temp;
+        }
+
+        // Equality / inequality
+        bool operator==(const Iterator& other) const {
+            return vec == other.vec && index == other.index;
+        }
+        bool operator!=(const Iterator& other) const {
+            return !(*this == other);
+        }
+    };
+
+    // begin() and end()
+    Iterator begin() { return Iterator(this, 0); }
+    Iterator end() { return Iterator(this, length); }
+
+    // ====================================
+
     // Constructors and destructor
     Vector() {
         arr = new T[1];
@@ -37,7 +77,7 @@ public:
         arr = nullptr;
     }
 
-    // Copy constructor (optional but nice to have)
+    // Copy constructor
     Vector(const Vector& other) {
         vCapacity = other.vCapacity;
         length = other.length;

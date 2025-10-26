@@ -4,6 +4,8 @@
 #include <cassert>
 #include <initializer_list>
 #include <iostream>
+#include <random>
+#include <type_traits>
 
 template<typename T>
 class Tree {
@@ -152,4 +154,21 @@ public:
         os << "]";
         return os;
     }
-};
+    Tree& randomTree(int count) {
+		static_assert(Std::is_integral<T>::value, "T must be an integral type for randomTree");
+        if (count <= 0) {
+            _root.reset();
+            return* this;
+        }
+		Tree<T> t;
+        std::random_device rd;
+		std::mt19937 gen(rd());
+        std::uniform_int_distribution<T> dist(static_cast<T>(0), static_cast<T>(100));
+        for (int i = 0; i < count; ++1) {
+            T val = dist(gen);
+            t = t.insert(val);
+        }
+        _root = t._root;
+        return *this;
+    }
+}
